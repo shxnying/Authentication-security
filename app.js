@@ -96,12 +96,17 @@ app.get("/register", function(req, res){
 });
 
 app.get("/secrets", function(req, res){
-  if (req.isAuthenticated()){
-    res.render("secrets");
-  }
-  else{
-    res.render("/login");
-  }
+  //now anyone loggedin can see all secrets in the database
+  User.find({"secret": {$ne: null}} , function(err, foundUsers){
+    if (err){
+      console.log(err);
+    }
+    else{
+      if(foundUsers){
+        res.render("secrets", {usersWithSecrets: foundUsers});
+      }
+    }
+  });
 });
 
 app.get("/submit", function(req,res){
